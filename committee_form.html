@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>國立聯合大學研究生學位考試委員聘請名冊</title>
+    <style>
+        /* 基礎全域樣式 */
+        body { font-family: "標楷體", "Microsoft JhengHei", serif; background: #525659; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        /* 1. 上方資料輸入區（僅網頁看得到，列印時會自動隱藏） */
+        .input-panel { background: #ffffff; width: 210mm; padding: 25px; margin-bottom: 20px; border-radius: 8px; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .input-panel h2 { margin-top: 0; color: #800000; border-bottom: 2px solid #800000; padding-bottom: 8px; font-size: 20px; font-family: "Microsoft JhengHei", sans-serif; }
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-group label { font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #333; font-family: "Microsoft JhengHei", sans-serif; }
+        .form-group input, .form-group select { padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
+        .member-form-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .member-form-table th, .member-form-table td { border: 1px solid #ccc; padding: 6px; font-size: 13px; text-align: left; font-family: "Microsoft JhengHei", sans-serif; }
+        .member-form-table input, .member-form-table select { width: 100%; box-sizing: border-box; padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px; }
+        .print-action { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; background: #f8f9fa; padding: 10px; border-left: 4px solid #ffc107; font-family: "Microsoft JhengHei", sans-serif; }
+        .btn-print { background: #800000; color: white; border: none; padding: 10px 24px; font-size: 16px; cursor: pointer; font-weight: bold; border-radius: 4px; }
+        .btn-print:hover { background: #a01a1a; }
+
+        /* 2. 下方 A4 完美複刻預覽區（嚴格對照圖片格式） */
+        .a4-page { 
+            background: white; 
+            width: 210mm; 
+            height: 297mm; 
+            padding: 20mm 15mm 15mm 15mm; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            color: #000;
+        }
+        
+        /* 最上方獨立大標題 */
+        .doc-title-main { text-align: center; font-size: 28px; font-weight: bold; font-family: "標楷體", serif; margin-bottom: 20px; letter-spacing: 2px; }
+        
+        /* 整體大表格外框結構 */
+        .master-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .master-table td, .master-table th { border: 1px solid #000; padding: 6px 6px; font-size: 16px; vertical-align: middle; box-sizing: border-box; }
+        
+        /* 頂部學制勾選區 */
+        .checkbox-container { display: flex; gap: 15px; align-items: center; justify-content: center; }
+        .square-box { width: 15px; height: 15px; border: 1px solid #000; display: inline-block; position: relative; margin-right: 3px; vertical-align: middle; }
+        .square-box.checked::after { content: "✓"; position: absolute; top: -8px; left: 1px; font-size: 18px; font-weight: bold; }
+
+        /* 考試委員名單特殊雙線/加粗框效果 */
+        .double-border-row td { 
+            font-size: 22px; 
+            font-weight: bold; 
+            text-align: center; 
+            letter-spacing: 10px; 
+            padding: 8px 0; 
+            border-top: 3px double #000 !important; 
+            border-bottom: 3px double #000 !important; 
+        }
+        
+        /* 委員名單表頭 */
+        .column-header-row th { border: 1px solid #000; text-align: center; font-size: 16px; font-weight: normal; padding: 6px 2px; }
+        
+        /* 數據資料列 */
+        .data-row td { text-align: center; height: 42px; font-size: 15px; }
+        .rule-text { font-size: 13px; text-align: center; white-space: nowrap; line-height: 1.3; }
+        .rule-blank { display: inline-block; width: 22px; text-align: center; font-weight: bold; }
+
+        /* 單位核章 */
+        .stamp-section { margin-top: 20px; font-size: 17px; font-weight: bold; }
+        .stamp-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        .stamp-table td { border: 1px solid #000; width: 33.33%; height: 72px; vertical-align: top; padding: 5px; font-size: 16px; box-sizing: border-box; font-weight: normal; }
+        .stamp-center-text { text-align: center; display: block; margin-top: 2px; }
+        
+        /* ✨ 關鍵修正 1：1051208修訂 精準定位在表格右下方外側 */
+        .revision-container { text-align: right; width: 100%; font-size: 12px; margin-top: 4px; padding-right: 2px; box-sizing: border-box; }
+
+        /* ✨ 關鍵修正 2：緊湊的備註排版，縮小間距防止過度留白 */
+        .doc-footer { margin-top: 15px; font-size: 16px; line-height: 1.6; }
+        .footer-title { font-weight: bold; margin-bottom: 5px; }
+        .footer-notes { margin: 0; padding-left: 25px; list-style-type: none; }
+        .footer-notes li { margin-bottom: 5px; text-indent: -25px; }
+        .underline-space { text-decoration: underline; font-weight: bold; padding: 0 4px; }
+
+        /* ✨ 3. 瀏覽器列印控制
+           點擊「列印/產生PDF」按鈕時，瀏覽器會套用這裡的樣式：
+           把上面的輸入面板整個藏起來（.input-panel { display:none }），
+           只留下 .a4-page 那張正式文件，並固定為 A4 大小、無邊界。 */
+        @media print {
+            @page { 
+                size: A4 portrait; 
+                margin: 0; 
+            }
+            body { background: white; padding: 0; margin: 0; }
+            .input-panel { display: none !important; }
+            .a4-page { 
+                box-shadow: none; 
+                padding: 20mm 15mm 15mm 15mm; 
+                margin: 0; 
+                width: 210mm; 
+                height: 297mm; 
+                page-break-after: avoid; 
+                page-break-inside: avoid; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     輸入面板區（.input-panel）
+     這一整塊只在網頁上看得到，列印時會被上面 @media print 的
+     .input-panel { display: none !important; } 隱藏掉。
+     裡面每個 input/select 的 id，都對應下面 <script> 裡
+     syncData() 函式讀取的 id，兩邊要一致改動才會生效。
+     ============================================================ -->
+<div class="input-panel">
+    <h2>國立聯合大學標單產製系統 — 填寫面板</h2>
+    <div class="form-grid">
+        <!-- 學制：碩士班 / 博士班，會控制正式文件裡打勾的方框 -->
+        <div class="form-group">
+            <label>學制類別</label>
+            <select id="inDegree" onchange="syncData()">
+                <option value="碩士班">碩士班</option>
+                <option value="博士班">博士班</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>研究生姓名</label>
+            <input type="text" id="inName" placeholder="請輸入姓名" oninput="syncData()">
+        </div>
+        <div class="form-group">
+            <label>學號</label>
+            <input type="text" id="inId" placeholder="請輸入學號" oninput="syncData()">
+        </div>
+        <div class="form-group full">
+            <label>系所(學位學程)</label>
+            <input type="text" id="inDept" placeholder="例如：電子工程學系碩士班" oninput="syncData()">
+        </div>
+        <div class="form-group full">
+            <label>論文題目</label>
+            <input type="text" id="inTitle" placeholder="請輸入完整論文題目" oninput="syncData()">
+        </div>
+        <div class="form-group full">
+            <label>考試學年學期</label>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <input type="number" id="inYear" style="width: 80px; text-align: center;" placeholder="115" oninput="syncData()"> 學年度第
+                <select id="inTerm" onchange="syncData()">
+                    <option value="一">一</option>
+                    <option value="二">二</option>
+                </select> 學期
+            </div>
+        </div>
+        <div class="form-group full">
+            <label>指導教授</label>
+            <input type="text" id="inAdvisor" placeholder="請輸入指導教授姓名" oninput="syncData()">
+        </div>
+    </div>
+
+    <!-- 考試委員名單填寫表格：欄位是用 <script> 裡的 for 迴圈
+         自動產生 6 列（i = 1~6），不是寫死在 HTML 裡。
+         若要改成 5 列或 8 列，只要改 <script> 迴圈的 i <= 6 即可，
+         不用在這裡手動加/刪 <tr>。 -->
+    <h3>考試委員名單填寫（共 6 列）</h3>
+    <table class="member-form-table">
+        <thead>
+            <tr>
+                <th width="10%">姓名</th>
+                <th width="18%">最高學歷</th>
+                <th width="22%">服務單位</th>
+                <th width="12%">職稱</th>
+                <th width="38%">資格款目（下拉選擇）</th>
+            </tr>
+        </thead>
+        <tbody id="inputRows">
+            </tbody>
+    </table>
+
+    <div class="print-action">
+        <span>檢查下方預覽畫面符合學校規定後，點擊右側按鈕直接列印。</span>
+        <button class="btn-print" onclick="window.print()">列印 / 產生 PDF 檔案</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     正式文件區（.a4-page）
+     這是實際列印出來、送出去的那張 A4 表單。
+     裡面的 <span id="outXXX"> 都是空的，內容由下面 <script>
+     的 syncData() 在使用者輸入時即時填進去，
+     所以不要直接在這裡打字，要改資料請到上面的輸入面板改。
+     ============================================================ -->
+<div class="a4-page">
+    
+    <div class="doc-title-main">國立聯合大學研究生學位考試委員聘請名冊</div>
+    
+    <table class="master-table">
+        <tr>
+            <td width="36%">
+                <div class="checkbox-container">
+                    <div><span class="square-box" id="boxPhd"></span>博士班</div>
+                    <div><span class="square-box checked" id="boxMaster"></span>碩士班</div>
+                </div>
+            </td>
+            <td width="32%">姓名：<span id="outName"></span></td>
+            <td width="32%">學號：<span id="outId"></span></td>
+        </tr>
+        <tr>
+            <td colspan="3">系所(學位學程)：<span id="outDept"></span></td>
+        </tr>
+        <tr>
+            <td colspan="3" style="height: 44px;">論文題目：<span id="outTitle"></span></td>
+        </tr>
+        <tr>
+            <td colspan="3">考試學年學期：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="outYear"></span>&nbsp;&nbsp;&nbsp;學年度第&nbsp;&nbsp;&nbsp;<span id="outTerm"></span>&nbsp;&nbsp;&nbsp;學期</td>
+        </tr>
+        <tr>
+            <td colspan="3">指導教授：<span id="outAdvisor"></span></td>
+        </tr>
+        
+        <tr class="double-border-row">
+            <td colspan="3">考試委員名單</td>
+        </tr>
+    </table>
+
+    <!-- 委員名單「正式輸出」表格：tbody 同樣是空的，
+         6 列內容由 <script> 迴圈自動產生並填值，
+         id="printRows" 就是迴圈要插入 <tr> 的地方。 -->
+    <table class="master-table" style="border-top: none;">
+        <thead>
+            <tr class="column-header-row">
+                <th width="14%">姓名</th>
+                <th width="22%">最高學歷</th>
+                <th width="24%">服務單位</th>
+                <th width="14%">職稱</th>
+                <th width="26%">符合學位考試要點<br>委員資格款次</th>
+            </tr>
+        </thead>
+        <tbody id="printRows">
+            </tbody>
+    </table>
+
+    <div class="stamp-section">
+        單位核章：
+        <table class="stamp-table">
+            <tr>
+                <td><span class="stamp-center-text">1.指導教授</span></td>
+                <td><span class="stamp-center-text">2.系所(學位學程)承辦</span></td>
+                <td><span class="stamp-center-text">3.系所(學位學程)主任</span></td>
+            </tr>
+            <tr>
+                <td><span class="stamp-center-text">4.註冊組(承辦人及組長)</span></td>
+                <td><span class="stamp-center-text">5.教務長</span></td>
+                <td><span class="stamp-center-text">6.校 長</span></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="revision-container">1051208 修訂</div>
+
+    <div class="doc-footer">
+        <div class="footer-title">備註：</div>
+        <ul class="footer-notes">
+            <li>1. 召集人由委員互推,但指導教授不得為召集人。</li>
+            <li>2. 研究生之配偶、前配偶、四等親內之血親或三等親內之姻親不得擔任其考試委員。</li>
+            <li>3. 考試委員資格請參閱本校碩、博士學位考試要點。</li>
+            <li>4. 隨表附陳學位考試委員聘函【<span class="underline-space">&nbsp;&nbsp;&nbsp;&nbsp;</span>】份,經鈞長核章後,請准予用印。</li>
+            <li>5. 學位考試委員共＿＿位聘函本學期已發放。</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // inputRowsContainer：上面「填寫面板」委員表格的 <tbody>，
+    // printRowsContainer：下面「正式文件」委員表格的 <tbody>。
+    // 下面的 for 迴圈會同時往這兩個 <tbody> 裡各塞 6 列 <tr>。
+    const inputRowsContainer = document.getElementById('inputRows');
+    const printRowsContainer = document.getElementById('printRows');
+
+    // ★ 資格款目對照表（最常需要修改的地方）★
+    // label：下拉選單裡顯示的完整條文文字
+    // kuan ：正式文件「第＿款」要顯示的數字（中文數字，例如 三）
+    // mu   ：正式文件「第＿目」要顯示的數字（中文數字，例如 一/二/三/四）
+    // 目前四個選項都是「第三款」，只有「目」不同；
+    // 如果學校規定改了，或款次不一樣，只要改這個陣列裡的
+    // label / kuan / mu 三個值即可，其他程式碼都不用動。
+    // 若要新增/刪除選項，直接在陣列裡加一行或刪一行 { ... } 就好。
+    const qualifyOptions = [
+        { label: '(1) 現任或曾任教授、副教授、助理教授。', kuan: '三', mu: '一' },
+        { label: '(2) 中央研究院院士、現任或曾任中央研究院研究員、副研究員、助研究員。', kuan: '三', mu: '二' },
+        { label: '(3) 獲有博士學位，且在學術上著有成就。', kuan: '三', mu: '三' },
+        { label: '(4) 研究領域屬於稀少性、特殊性學科或屬專業實務，且在學術或專業上著有成就。', kuan: '三', mu: '四' }
+    ];
+
+    // 生成 6 組資料列（想改委員人數，把下面 i <= 6 的 6 改掉即可，
+    // 例如改成 i <= 8 就會變成 8 位委員；HTML 裡不用另外增刪東西）
+    for (let i = 1; i <= 6; i++) {
+        // ---- 這一段是「填寫面板」那一列的輸入欄位 ----
+        const trInput = document.createElement('tr');
+
+        // 用 qualifyOptions 陣列動態組出下拉選單的 <option> 列表
+        let optionsHtml = '<option value="">請選擇資格款目</option>';
+        qualifyOptions.forEach((opt, idx) => {
+            optionsHtml += `<option value="${idx}">${opt.label}</option>`;
+        });
+
+        trInput.innerHTML = `
+            <td><input type="text" id="mName${i}" placeholder="委員${i}" oninput="syncData()"></td>
+            <td><input type="text" id="mEdu${i}" oninput="syncData()"></td>
+            <td><input type="text" id="mUnit${i}" oninput="syncData()"></td>
+            <td><input type="text" id="mTitle${i}" oninput="syncData()"></td>
+            <td><select id="mQualify${i}" onchange="syncData()">${optionsHtml}</select></td>
+        `;
+        inputRowsContainer.appendChild(trInput);
+
+        // ---- 這一段是「正式文件」那一列的顯示欄位（目前都是空的） ----
+        // outKuan${i} / outMu${i} 這兩個 <span> 就是「第＿款第＿目」
+        // 要顯示的地方，實際數字由下面 syncData() 依下拉選單填入。
+        const trPrint = document.createElement('tr');
+        trPrint.className = "data-row";
+        trPrint.innerHTML = `
+            <td id="outMName${i}"></td>
+            <td id="outMEdu${i}"></td>
+            <td id="outMUnit${i}"></td>
+            <td id="outMTitle${i}"></td>
+            <td>
+                <div class="rule-text">
+                    符合第三點第一項<br>第<span class="rule-blank" id="outKuan${i}"></span>款第<span class="rule-blank" id="outMu${i}"></span>目資格
+                </div>
+            </td>
+        `;
+        printRowsContainer.appendChild(trPrint);
+    }
+
+    // syncData()：核心同步函式。
+    // 每次上面輸入面板任何欄位有變動（oninput / onchange 觸發），
+    // 都會整個重跑一次這個函式，把最新的值寫進下面正式文件的
+    // 對應 <span id="outXXX">，讓預覽畫面即時更新。
+    // 如果之後想新增欄位，記得：
+    //   1. 輸入面板加一個 <input id="inXXX">
+    //   2. 正式文件加一個 <span id="outXXX">
+    //   3. 這裡加一行 document.getElementById('outXXX').innerText = document.getElementById('inXXX').value;
+    function syncData() {
+        // 依「學制類別」下拉選單，切換博士班/碩士班方框的打勾樣式
+        const degree = document.getElementById('inDegree').value;
+        if (degree === '博士班') {
+            document.getElementById('boxPhd').className = 'square-box checked';
+            document.getElementById('boxMaster').className = 'square-box';
+        } else {
+            document.getElementById('boxPhd').className = 'square-box';
+            document.getElementById('boxMaster').className = 'square-box checked';
+        }
+
+        document.getElementById('outName').innerText = document.getElementById('inName').value;
+        document.getElementById('outId').innerText = document.getElementById('inId').value;
+        document.getElementById('outDept').innerText = document.getElementById('inDept').value;
+        document.getElementById('outTitle').innerText = document.getElementById('inTitle').value;
+        document.getElementById('outYear').innerText = document.getElementById('inYear').value || '    ';
+        document.getElementById('outTerm').innerText = document.getElementById('inTerm').value;
+        document.getElementById('outAdvisor').innerText = document.getElementById('inAdvisor').value;
+
+        // 逐一同步 6 位委員的姓名/學歷/單位/職稱，
+        // 以及依下拉選單選項換算出的「款」「目」數字
+        for (let i = 1; i <= 6; i++) {
+            document.getElementById(`outMName${i}`).innerText = document.getElementById(`mName${i}`).value;
+            document.getElementById(`outMEdu${i}`).innerText = document.getElementById(`mEdu${i}`).value;
+            document.getElementById(`outMUnit${i}`).innerText = document.getElementById(`mUnit${i}`).value;
+            document.getElementById(`outMTitle${i}`).innerText = document.getElementById(`mTitle${i}`).value;
+
+            // 讀取下拉選單目前選到第幾個選項（0~3），
+            // 再去 qualifyOptions 陣列查出對應的 kuan / mu 文字
+            const selectedIdx = document.getElementById(`mQualify${i}`).value;
+            if (selectedIdx !== '') {
+                const opt = qualifyOptions[parseInt(selectedIdx, 10)];
+                document.getElementById(`outKuan${i}`).innerText = opt.kuan;
+                document.getElementById(`outMu${i}`).innerText = opt.mu;
+            } else {
+                // 還沒選擇時，顯示空白，避免預覽出現 undefined
+                document.getElementById(`outKuan${i}`).innerText = '  ';
+                document.getElementById(`outMu${i}`).innerText = '  ';
+            }
+        }
+    }
+
+    syncData();
+</script>
+
+</body>
+</html>
